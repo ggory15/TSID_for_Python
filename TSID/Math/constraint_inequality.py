@@ -31,7 +31,7 @@ class ConstraintInequality(ConstraintBase):
         return len(self.m_A)
 
     def cols(self):
-        assert self.m_A.size
+        return self.m_A.size / self.rows()
 
     def resize(self, r, c):
         self.m_A = np.matrix(np.zeros((r, c)))
