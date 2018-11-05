@@ -15,7 +15,7 @@ class TaskJointPosture(TaskMotion):
             self.m_Kv = np.matrix(np.zeros(robot.nv-6)).transpose()
             self.m_a_des = np.matrix(np.zeros(robot.nv-6)).transpose()
             self.m_mask = []
-            m = np.matrix(np.ones(robot.nv-6)).transpose()
+            m = np.matrix(np.ones(robot.nv-6), np.int).transpose()
             self.setMask(m)
         else:
             self.m_ref = TrajectorySample(self.m_robot.nv)
@@ -24,7 +24,7 @@ class TaskJointPosture(TaskMotion):
             self.m_Kv = np.matrix(np.zeros(robot.nv)).transpose()
             self.m_a_des = np.matrix(np.zeros(robot.nv)).transpose()
             self.m_mask = []
-            m = np.matrix(np.ones(robot.nv)).transpose()
+            m = np.matrix(np.ones(robot.nv), np.int).transpose()
             self.setMask(m)
 
     def dim(self):
@@ -106,7 +106,7 @@ class TaskJointPosture(TaskMotion):
             self.m_activeAxes = np.matrix(np.zeros(dim), np.integer).transpose()
             j = 0
             for i in range(0, len(m)):
-                if m[i] is not 0.0:
+                if m[i, 0] != 0:
                     assert m[i] == 1.0
                     S[j, i] = 1.0
                     self.m_activeAxes[j] = i

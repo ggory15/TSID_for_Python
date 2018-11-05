@@ -122,7 +122,7 @@ class Invdyn(InvdynBase):
         return 0
 
     def getAccelerations(self, sol):
-        return 0
+        return np.matrix(sol[0:self.m_robot.nv]).transpose()
 
     def getContactForces(self, sol):
         return 0

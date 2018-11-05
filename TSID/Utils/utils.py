@@ -20,3 +20,5 @@ def SE3toVector(M):
     ref[3:6] = copy.deepcopy(M.rotation[0:3, 0])
     ref[6:9] = copy.deepcopy(M.rotation[0:3, 1])
     ref[9:12] = copy.deepcopy(M.rotation[0:3, 2])
+
+    return ref

@@ -30,9 +30,13 @@ class TaskSE3Equality(TaskMotion):
         self.m_a_des = np.matrix(np.zeros(6)).transpose()
         self.m_J = np.matrix(np.zeros((6, robot.nv)))
         self.m_drift = []
+        self.m_position_only = False
 
     def dim(self):
-        return 6
+        if not self.m_position_only:
+            return 6
+        else:
+            return 3
 
     def compute(self, t, q, v):
         oMi = self.m_robot.framePosition(q, self.m_frame_id)
@@ -54,8 +58,13 @@ class TaskSE3Equality(TaskMotion):
             self.m_a_des[i] = -self.m_Kp[i] * self.m_p_error_vec[i] - self.m_Kv[i] * self.m_v_error_vec[i] + self.m_wMl.actInv(self.m_a_ref).vector[i]
 
         self.m_J = self.m_robot.frameJacobian(q, self.m_frame_id, se3.ReferenceFrame.LOCAL)
-        self.m_constraint.setMatrix(self.m_J)
-        self.m_constraint.setVector(self.m_a_des - self.m_drift.vector)
+        if not self.m_position_only:
+            self.m_constraint.setMatrix(self.m_J)
+            self.m_constraint.setVector(self.m_a_des - self.m_drift.vector)
+        else:
+            self.m_constraint.setMatrix(self.m_J[0:3,])
+            self.m_constraint.setVector(self.m_a_des[0:3] - self.m_drift.vector[0:3])
+
         return self.m_constraint
 
     def getConstraint(self):
@@ -110,6 +119,11 @@ class TaskSE3Equality(TaskMotion):
 
     def frame_id(self):
         return self.m_frame_id
+
+    def setPositionControl(self, pos):
+        self.m_position_only = pos
+        if pos:
+            self.m_constraint.resize(self.m_robot.nv , 3)
 
 
 
